@@ -1,8 +1,14 @@
 #include <Arduino.h>
+#include <SPI.h>
+#include <LoRa.h>
 
 #define TRIG_PIN 7
 #define ECHO_PIN 6
 #define TRASH_CAN_HEIGHT 40
+
+#define LORA_SS 10
+#define LORA_RST 9
+#define LORA_DIO0 2
 
 float get_distance()
 {
@@ -18,19 +24,37 @@ float get_distance()
   return distance;
 }
 
-float get_fill_level_percentage()
+float get_trash_level()
 {
   float distance = get_distance();
-  float fill_level_percentage = ((TRASH_CAN_HEIGHT - distance) / TRASH_CAN_HEIGHT) * 100;
+  float trash_level = ((TRASH_CAN_HEIGHT - distance) / TRASH_CAN_HEIGHT) * 100;
 
-  fill_level_percentage = constrain(fill_level_percentage, 0, 100);
-  return fill_level_percentage;
+  trash_level = constrain(trash_level, 0, 100);
+  return trash_level;
+}
+
+void lora_transmit(float trash_level){
+  LoRa.beginPacket();
+  LoRa.print(trash_level);
+  LoRa.endPacket();
 }
 
 void setup()
 {
+  Serial.begin(9600);
+    
+    pinMode(TRIG_PIN, OUTPUT);
+    pinMode(ECHO_PIN, INPUT);
+
+    LoRa.setPins(LORA_SS, LORA_RST, LORA_DIO0);
+    
+    if (!LoRa.begin(915E6)) {
+        Serial.println("LoRa init failed!");
+    }
+    Serial.println("LoRa Initialized");
 }
 
 void loop()
 {
+
 }
