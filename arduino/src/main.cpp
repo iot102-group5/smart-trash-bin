@@ -5,6 +5,7 @@
 #include <ArduinoJson.h>
 
 #define BAUD_RATE 9600
+#define LORA_FREQUENCY 433E6
 
 #define OBJECT_TRIG_PIN 8
 #define OBJECT_ECHO_PIN 7
@@ -36,7 +37,7 @@ void setup()
 
     servo.attach(SERVO_PIN, 600, 2300);
 
-    if (!LoRa.begin(433E6))
+    if (!LoRa.begin(LORA_FREQUENCY))
     {
         Serial.println("LoRa init failed!");
     }
