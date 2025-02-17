@@ -2,6 +2,7 @@
 #include <SPI.h>
 #include <LoRa.h>
 #include <Servo.h>
+#include <ArduinoJson.h>
 
 #define OBJECT_TRIG_PIN 8
 #define OBJECT_ECHO_PIN 7
@@ -32,7 +33,7 @@ void setup()
 
   servo.attach(SERVO_PIN, 600, 2300);
 
-  if (!LoRa.begin(915E6))
+  if (!LoRa.begin(433E6))
   {
     Serial.println("LoRa init failed!");
   }
@@ -72,9 +73,13 @@ void set_trash_can(bool is_open) {
 
 void lora_transmit(float trash_level, bool is_open)
 {
+  JsonDocument doc;
+  
+  doc["is_open"] = is_open;
+  doc["trash_level"] = trash_level;
+
   LoRa.beginPacket();
-  LoRa.println(trash_level);
-  LoRa.println(is_open);
+  serializeJson(doc, LoRa);
   LoRa.endPacket(true);
 }
 
@@ -86,5 +91,5 @@ void loop()
   Serial.println(is_open);
   set_trash_can(is_open);
   lora_transmit(trash_level, is_open);
-  delay(1000);
+  delay(5000);
 }
