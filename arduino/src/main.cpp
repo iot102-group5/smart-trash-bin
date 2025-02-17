@@ -18,8 +18,6 @@
 #define OPEN_DISTANCE 10
 
 Servo servo;
-float trash_level;
-bool is_open;
 
 void onTxDone()
 {
@@ -91,11 +89,14 @@ void lora_transmit(float trash_level, bool is_open)
 
 void loop()
 {
-    trash_level = get_trash_level();
+    float trash_level = get_trash_level();
     Serial.println(trash_level);
-    is_open = get_is_open();
-    Serial.println(is_open);
+
+    bool is_open = get_is_open();
     set_trash_can(is_open);
+    Serial.println(is_open);
+
     lora_transmit(trash_level, is_open);
+
     delay(5000);
 }
