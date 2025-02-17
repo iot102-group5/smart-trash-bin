@@ -4,18 +4,20 @@
 #include <Servo.h>
 #include <ArduinoJson.h>
 
-#define OBJECT_TRIG_PIN 8
-#define OBJECT_ECHO_PIN 7
-#define TRASH_TRIG_PIN 6
-#define TRASH_ECHO_PIN 5
-#define SERVO_PIN 3
+#define OBJECT_TRIG_PIN     8
+#define OBJECT_ECHO_PIN     7
+#define TRASH_TRIG_PIN      6
+#define TRASH_ECHO_PIN      5
+#define SERVO_PIN           3
 
-#define TRASH_CAN_HEIGHT 40
-#define OPEN_DISTANCE 10
+#define BAUD_RATE           9600
+#define LORA_FREQUENCY      433E6
+#define SOUND_SPEED         0.0334  // cm/s
+#define DATA_SEND_DELAY     5000    // ms
+#define TRASH_CAN_HEIGHT    40      // cm
+#define OPEN_DISTANCE       10      // cm
 
 Servo servo;
-float trash_level;
-bool is_open;
 
 void onTxDone()
 {
@@ -24,7 +26,7 @@ void onTxDone()
 
 void setup()
 {
-    Serial.begin(9600);
+    Serial.begin(BAUD_RATE);
 
     pinMode(OBJECT_TRIG_PIN, OUTPUT);
     pinMode(OBJECT_ECHO_PIN, INPUT);
@@ -34,7 +36,7 @@ void setup()
 
     servo.attach(SERVO_PIN, 600, 2300);
 
-    if (!LoRa.begin(433E6))
+    if (!LoRa.begin(LORA_FREQUENCY))
     {
         Serial.println("LoRa init failed!");
     }
@@ -50,7 +52,7 @@ float get_distance(int trig_pin, int echo_pin)
     digitalWrite(trig_pin, LOW);
 
     float duration = pulseIn(echo_pin, HIGH);
-    float distance = duration / 29 / 2;
+    float distance = duration / 2 * SOUND_SPEED;
 
     return distance;
 }
@@ -87,11 +89,14 @@ void lora_transmit(float trash_level, bool is_open)
 
 void loop()
 {
-    trash_level = get_trash_level();
+    float trash_level = get_trash_level();
     Serial.println(trash_level);
-    is_open = get_is_open();
-    Serial.println(is_open);
+
+    bool is_open = get_is_open();
     set_trash_can(is_open);
+    Serial.println(is_open);
+
     lora_transmit(trash_level, is_open);
-    delay(5000);
+
+    delay(DATA_SEND_DELAY);
 }
