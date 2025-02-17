@@ -4,18 +4,18 @@
 #include <Servo.h>
 #include <ArduinoJson.h>
 
-#define BAUD_RATE 9600
-#define LORA_FREQUENCY 433E6
-#define SOUND_SPEED 0.0334 // cm/s
+#define OBJECT_TRIG_PIN     8
+#define OBJECT_ECHO_PIN     7
+#define TRASH_TRIG_PIN      6
+#define TRASH_ECHO_PIN      5
+#define SERVO_PIN           3
 
-#define OBJECT_TRIG_PIN 8
-#define OBJECT_ECHO_PIN 7
-#define TRASH_TRIG_PIN 6
-#define TRASH_ECHO_PIN 5
-#define SERVO_PIN 3
-
-#define TRASH_CAN_HEIGHT 40
-#define OPEN_DISTANCE 10
+#define BAUD_RATE           9600
+#define LORA_FREQUENCY      433E6
+#define SOUND_SPEED         0.0334  // cm/s
+#define DATA_SEND_DELAY     5000    // ms
+#define TRASH_CAN_HEIGHT    40      // cm
+#define OPEN_DISTANCE       10      // cm
 
 Servo servo;
 
@@ -98,5 +98,5 @@ void loop()
 
     lora_transmit(trash_level, is_open);
 
-    delay(5000);
+    delay(DATA_SEND_DELAY);
 }
