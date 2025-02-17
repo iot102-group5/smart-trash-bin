@@ -6,6 +6,7 @@
 
 #define BAUD_RATE 9600
 #define LORA_FREQUENCY 433E6
+#define SOUND_SPEED 0.0334 // cm/s
 
 #define OBJECT_TRIG_PIN 8
 #define OBJECT_ECHO_PIN 7
@@ -53,7 +54,7 @@ float get_distance(int trig_pin, int echo_pin)
     digitalWrite(trig_pin, LOW);
 
     float duration = pulseIn(echo_pin, HIGH);
-    float distance = duration / 29 / 2;
+    float distance = duration / 2 * SOUND_SPEED;
 
     return distance;
 }
