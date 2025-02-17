@@ -4,6 +4,8 @@
 #include <Servo.h>
 #include <ArduinoJson.h>
 
+#define BAUD_RATE 9600
+
 #define OBJECT_TRIG_PIN 8
 #define OBJECT_ECHO_PIN 7
 #define TRASH_TRIG_PIN 6
@@ -24,7 +26,7 @@ void onTxDone()
 
 void setup()
 {
-    Serial.begin(9600);
+    Serial.begin(BAUD_RATE);
 
     pinMode(OBJECT_TRIG_PIN, OUTPUT);
     pinMode(OBJECT_ECHO_PIN, INPUT);
