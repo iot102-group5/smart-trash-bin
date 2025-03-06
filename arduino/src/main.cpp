@@ -13,9 +13,8 @@
 #define BAUD_RATE 9600
 #define LORA_FREQUENCY 433E6
 #define SOUND_SPEED 0.0334 // cm/s
-#define DATA_SEND_DELAY 5000 // ms
-#define TRASH_CAN_HEIGHT 40 // cm
-#define OPEN_DISTANCE 10 // cm
+#define TRASH_CAN_HEIGHT 23 // cm
+#define OPEN_DISTANCE 30 // cm
 
 struct State {
 	float trash_level;
