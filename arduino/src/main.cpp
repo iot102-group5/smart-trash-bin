@@ -11,10 +11,11 @@
 #define SERVO_PIN 3
 
 #define BAUD_RATE 9600
-#define LORA_FREQUENCY 433E6
+#define LORA_FREQUENCY 433E1
 #define SOUND_SPEED 0.0334 // cm/s
-#define TRASH_CAN_HEIGHT 23 // cm
-#define OPEN_DISTANCE 30 // cm
+#define TRASH_CAN_HEIGHT 22 // cm
+#define OPEN_DISTANCE 80 // cm
+#define DELAY_TIME 1000
 
 struct State {
 	float trash_level;
@@ -22,7 +23,7 @@ struct State {
 };
 bool operator==(const struct State &a, const struct State &b)
 {
-	return a.is_open == b.is_open && a.trash_level == b.trash_level;
+	return a.is_open == b.is_open;
 }
 
 struct State prev_state = {
@@ -71,7 +72,7 @@ float get_distance(int trig_pin, int echo_pin)
 
 struct State get_state()
 {
-	float distance = get_distance(TRASH_TRIG_PIN, TRASH_ECHO_PIN);
+	float distance = get_distance(TRASH_TRIG_PIN, TRASH_ECHO_PIN) - 5;
 	float trash_level = (1 - distance / TRASH_CAN_HEIGHT) * 100;
 	trash_level = constrain(trash_level, 0, 100);
 
@@ -91,6 +92,9 @@ void sync_state(struct State &data)
 void lora_transmit(struct State &state)
 {
 	JsonDocument doc;
+	
+	Serial.print("Test: ");
+	Serial.println(state.trash_level);
 
 	doc["trash_level"] = state.trash_level;
 	doc["is_open"] = state.is_open;
@@ -103,11 +107,16 @@ void lora_transmit(struct State &state)
 void loop()
 {
 	struct State state = get_state();
+	Serial.println(state.is_open);
+	Serial.println(state.trash_level);
 	if (state == prev_state) {
+		delay(DELAY_TIME);
 		return;
 	}
+	
 
     prev_state = state;
 	lora_transmit(state);
     sync_state(state);
+	delay(DELAY_TIME);
 }

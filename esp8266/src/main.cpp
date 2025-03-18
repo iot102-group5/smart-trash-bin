@@ -4,13 +4,14 @@
 #include <SPI.h>
 #include <LoRa.h>
 
-const char *ssid = "Wifi_SSID";
-const char *password = "Password";
+const char *ssid = "yuu";
+const char *password = "akagiyuu";
 const char *server_url = "https://trashcan-api.arisavinh.dev/device/3fa85f64-5717-4562-b3fc-2c963f66afa6/data";
 
 #define LORA_SS_PIN 15
 #define LORA_RESET_PIN 16
 #define LORA_DIO0_PIN 4
+#define LORA_FREQUENCY 433E1
 
 volatile bool lora_data_received = false;
 String lora_received_data = "";
@@ -26,6 +27,8 @@ void send_data_to_server()
 
     // Serial.println("Sending POST request with JSON: " + json_string);
 
+    Serial.print("data: ");
+    Serial.println(lora_received_data);
     int httpResponseCode = http.POST(lora_received_data);
     Serial.println("HTTP Response code: " + String(httpResponseCode));
 
@@ -60,7 +63,7 @@ void setup()
     Serial.begin(9600);
 
     LoRa.setPins(LORA_SS_PIN, LORA_RESET_PIN, LORA_DIO0_PIN);
-    if (!LoRa.begin(433E6))
+    if (!LoRa.begin(LORA_FREQUENCY))
     {
         Serial.println("LoRa initialization failed!");
     }
