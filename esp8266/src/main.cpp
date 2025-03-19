@@ -6,7 +6,7 @@
 
 const char *ssid = "yuu";
 const char *password = "akagiyuu";
-const char *server_url = "https://trashcan-api.arisavinh.dev/device/3fa85f64-5717-4562-b3fc-2c963f66afa6/data";
+const char *server_url = "https://trashcan-api.arisavinh.dev/device/data";
 
 #define LORA_SS_PIN 15
 #define LORA_RESET_PIN 16

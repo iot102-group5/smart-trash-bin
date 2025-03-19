@@ -17,6 +17,8 @@
 #define OPEN_DISTANCE 80 // cm
 #define DELAY_TIME 1000
 
+const char *id = "3fa85f64-5717-4562-b3fc-2c963f66afa6";
+
 struct State {
 	float trash_level;
 	bool is_open;
@@ -92,10 +94,11 @@ void sync_state(struct State &data)
 void lora_transmit(struct State &state)
 {
 	JsonDocument doc;
-	
+
 	Serial.print("Test: ");
 	Serial.println(state.trash_level);
 
+	doc["id"] = id;
 	doc["trash_level"] = state.trash_level;
 	doc["is_open"] = state.is_open;
 
@@ -113,10 +116,9 @@ void loop()
 		delay(DELAY_TIME);
 		return;
 	}
-	
 
-    prev_state = state;
+	prev_state = state;
 	lora_transmit(state);
-    sync_state(state);
+	sync_state(state);
 	delay(DELAY_TIME);
 }
